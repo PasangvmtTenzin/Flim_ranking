@@ -43,10 +43,10 @@ def load_population_data(file_path):
     return population_data
 
 population_path = 'data/population/population_data.csv'
-population_data = load_population_data(population_path)
-print(population_data.head(10), "\n")
+# population_data = load_population_data(population_path)
+# print(population_data.head(10), "\n")
 
-population = population_data.rename(columns={'Country Name': 'Country_Name', 'Country Code': 'Country_Code'})
+# population = population_data.rename(columns={'Country Name': 'Country_Name', 'Country Code': 'Country_Code'})
 
 # population.to_csv('data/population/cleaned_population_data.csv')
 
@@ -95,10 +95,10 @@ def load_economic_data(file_path):
     return economic_data
 
 economic_path = 'data/economic/economic_data.csv'
-economic_data = load_economic_data(economic_path)
-print(economic_data.head(10),"\n")
+# economic_data = load_economic_data(economic_path)
+# print(economic_data.head(10),"\n")
 
-economic = economic_data.rename(columns={'Country Name': 'Country_Name', 'Country Code': 'Country_Code'})
+# economic = economic_data.rename(columns={'Country Name': 'Country_Name', 'Country Code': 'Country_Code'})
 
 # economic.to_csv('data/economic/cleaned_economic_data.csv')
 
@@ -127,8 +127,10 @@ def load_merge_data(population_file_path, economic_file_path, output_file_path):
 
 population_file_path = 'data/population/cleaned_population_data.csv'
 economic_file_path = 'data/economic/cleaned_economic_data.csv'
-output_file_path = 'data/population_economic_data.csv'
+output_file_path = 'clean_data/eco_pop_data/population_economic_data.csv'
 
-merged_data = load_merge_data(population_file_path, economic_file_path, output_file_path)
+# merged_data = load_merge_data(population_file_path, economic_file_path, output_file_path)
 
-print(merged_data.head(6))
+# print(merged_data.head(6))
+
+# print(merged_data.isnull().sum())
