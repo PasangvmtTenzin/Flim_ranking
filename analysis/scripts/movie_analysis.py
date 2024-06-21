@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib.ticker import FuncFormatter
+import numpy as np
 
 # Load the dataset
 file_path = 'clean_data/movie/movie_data.csv'
@@ -96,8 +97,30 @@ def plot_correlation_between_votes_and_ratings(data):
     plt.savefig('analysis/plots/movie/correlation_between_votes_and_ratings.png', dpi=300)
     plt.show()
 
+def correlation_matrix(data):
+    # Select only numerical columns
+    numerical_data = data.select_dtypes(include=[np.number])
+
+    # Calculate the correlation matrix
+    correlation_matrix = numerical_data.corr()
+
+    # Set up the matplotlib figure
+    plt.figure(figsize=(12, 10))
+
+    # Draw the heatmap
+    sns.heatmap(correlation_matrix, annot=True, fmt='.2f', cmap='coolwarm', linewidths=0.5, square=True)
+
+    # Add title and adjust layout
+    plt.title('Correlation Matrix of the Dataset', fontsize=20, fontweight='bold')
+    plt.tight_layout()
+
+    # Save and show the plot
+    plt.savefig('analysis/plots/movie/correlation_matrix.png', dpi=300)
+    plt.show()
+
 # Calling the functions
 # plot_distribution_of_average_ratings(movie_data)
 # plot_number_of_votes_per_year(movie_data)
 # plot_average_rating_per_genre(movie_data)
-plot_correlation_between_votes_and_ratings(movie_data)
+# plot_correlation_between_votes_and_ratings(movie_data)
+# correlation_matrix(movie_data)
