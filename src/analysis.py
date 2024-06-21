@@ -70,9 +70,6 @@ def perform_analysis(gdp_file, population_file, start_year=None, end_year=None):
     # Quality of movies by country
     quality_by_country = analyze_quality_by_country(imdb_data, top_n=100)
     
-    # Custom analysis: additional analysis as needed
-    # ...
-
     # Output results
     print("Weak Impact by Country:")
     print(weak_impact.head(10))
