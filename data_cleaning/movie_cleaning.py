@@ -47,10 +47,10 @@ def load_mege_data(rate_path, genre_path, output_path):
 
     return movie_data
 
-# merged_data = load_mege_data(rate_path, genre_path, output_path)
+merged_data = load_mege_data(rate_path, genre_path, output_path)
 # print(merged_data.head(5))
 # print(merged_data.isnull().sum())
 # print(merged_data.info())
 
 # Save the file
-# merged_data.to_csv('clean_data/movie/movie_data.csv')
+merged_data.to_csv('clean_data/movie/movie_data.csv')
