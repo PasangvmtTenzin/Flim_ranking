@@ -47,10 +47,20 @@ def load_mege_data(rate_path, genre_path, output_path):
 
     return movie_data
 
-merged_data = load_mege_data(rate_path, genre_path, output_path)
+# merged_data = load_mege_data(rate_path, genre_path, output_path)
 # print(merged_data.head(5))
 # print(merged_data.isnull().sum())
 # print(merged_data.info())
 
 # Save the file
-merged_data.to_csv('clean_data/movie/movie_data.csv')
+#merged_data.to_csv('data/movie/movie_data.csv')
+
+akas_path = 'data/movie/title.akas.tsv'
+
+def load_akas_data(akas_path):
+    akas = pd.read_csv(akas_path, delimiter='\t', low_memory=False)
+    return akas
+
+akas_data = load_akas_data(akas_path)
+akas_data.to_csv('data/movie/akas.csv')
+# print(akas_data.head(5))
