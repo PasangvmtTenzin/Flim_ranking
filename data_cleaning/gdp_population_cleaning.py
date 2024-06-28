@@ -111,9 +111,6 @@ def load_merge_data(population_file_path, economic_file_path, output_file_path):
     # Merge GDP and Population data on Country Name, Country Code, and Year
     merged_data = pd.merge(economic_data, population_data, on=['Country_Name', 'Country_Code', 'Year'])
 
-    # Calculate GDP per capita
-    merged_data['GDP per Capital'] = merged_data['GDP'] / merged_data['Population']
-
     # Format the GDP column to remove decimals
     merged_data['GDP'] = merged_data['GDP'].apply(lambda x: '{:.0f}'.format(x))
 

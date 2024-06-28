@@ -2,11 +2,58 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib.ticker import FuncFormatter
+import plotly.express as px
 import numpy as np
 
 # Load the dataset
-file_path = 'clean_data/movie/movie_data.csv'
+file_path = 'merged_data/merged_cinematic_data.csv'
 movie_data = pd.read_csv(file_path)
+
+# Sort the movies by average rating in descending order
+sorted_movies_df = movie_data.sort_values(by='averageRating', ascending=False)
+
+# Initialize dictionary to store rankings
+rankings = {size: [] for size in range(10, 201, 10)}
+
+# Calculate rankings for different set sizes
+for size in range(10, 201, 10):
+    # Select the top 'size' movies
+    top_movies = sorted_movies_df.head(size)
+    # Count the number of movies per country
+    country_counts = top_movies['region'].value_counts()
+    # Store the top 10 countries in the rankings dictionary
+    rankings[size] = country_counts.nlargest(10).index.tolist()
+
+# Convert rankings to DataFrame for better visualization
+rankings_df = pd.DataFrame.from_dict(rankings, orient='index')
+
+
+# Prepare data for Plotly
+plotly_data = []
+
+for size in rankings_df.index:
+    for rank, country in enumerate(rankings_df.loc[size]):
+        plotly_data.append({
+            'Set Size': size,
+            'Country': country,
+            'Rank': rank + 1
+        })
+
+plotly_df = pd.DataFrame(plotly_data)
+
+# Create interactive plot
+fig = px.line(plotly_df, x='Set Size', y='Rank', color='Country', markers=True, title='Top 10 Countries by Representation in Top Rated Movies',
+              labels={'Set Size': 'Set Size', 'Rank': 'Country Rank'})
+
+# Invert y-axis to have rank 1 at the top
+fig.update_yaxes(autorange="reversed")
+
+# Show plot
+# fig.show()
+
+# fig.write_html('analysis/plots/movie/Quality_of_movies.html')
+
+""" This code includes general analysis of the dataset """
 
 # A function to format the y-axis labels
 def thousands_formatter(x, pos):
@@ -28,7 +75,7 @@ def plot_distribution_of_average_ratings(data):
 
 def plot_number_of_votes_per_year(data):
     plt.figure(figsize=(14, 8))
-    ax = sns.lineplot(x='Year', y='numVotes', data=data)
+    ax = sns.lineplot(x='startYear', y='numVotes', data=data)
     plt.title('Number of Votes Per Year')
     plt.xlabel('Year')
     plt.ylabel('Number of Votes')
