@@ -42,16 +42,36 @@ for size in rankings_df.index:
 plotly_df = pd.DataFrame(plotly_data)
 
 # Create interactive plot
-fig = px.line(plotly_df, x='Set Size', y='Rank', color='Country', markers=True, title='Top 10 Countries by Representation in Top Rated Movies',
-              labels={'Set Size': 'Set Size', 'Rank': 'Country Rank'})
+fig = px.line(plotly_df, x='Set Size', y='Rank', color='Country', markers=True,
+              title='Top 10 Countries by Representation in Top Rated Movies',
+              labels={'Set Size': 'Set Size', 'Rank': 'Country Rank'},
+              hover_name='Country', hover_data={'Set Size': True, 'Rank': True})
 
 # Invert y-axis to have rank 1 at the top
 fig.update_yaxes(autorange="reversed")
 
-# Show plot
-# fig.show()
+# Update layout for better readability
+fig.update_layout(
+    legend_title='Country',
+    legend=dict(
+        title_font_family="Arial",
+        font=dict(
+            family="Arial",
+            size=12,
+            color="black"
+        ),
+        bgcolor="LightSteelBlue",
+        bordercolor="Black",
+        borderwidth=2
+    )
+)
 
-# fig.write_html('analysis/plots/movie/Quality_of_movies.html')
+# Show plot
+fig.show()
+
+# Save the plot as an HTML file
+# fig.write_html('analysis/plots/movie/top_10_countries_representation.html')
+
 
 """ This code includes general analysis of the dataset """
 

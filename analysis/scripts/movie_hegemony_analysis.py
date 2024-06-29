@@ -9,7 +9,7 @@ economic_data_path = 'merged_data/population_economic_data.csv'
 cinematic_data = pd.read_csv(cinematic_data_path)
 economic_data = pd.read_csv(economic_data_path)
 
-# Example mapping (This needs to be filled with all country codes)
+# Country code mapping 
 country_code_mapping = {
     'AD': 'AND', 'AE': 'ARE', 'AF': 'AFG', 'AG': 'ATG', 'AI': 'AIA',
     'AL': 'ALB', 'AM': 'ARM', 'AN': 'ANT', 'AO': 'AGO', 'AQ': 'ATA',
@@ -68,10 +68,12 @@ cinematic_data_grouped = cinematic_data.groupby('Country_Code').agg(
     average_quality_score=('averageRating', 'mean')
 ).reset_index()
 
-# Step 3: Merge the Data
+# Merge the Data
 merged_data = pd.merge(cinematic_data_grouped, economic_data, on='Country_Code')
 
-# Step 4: Compute Ranks and Hegemony
+# merged_data.to_csv('merged_data/final_data.csv')
+
+# Compute Ranks and Hegemony
 # Calculate the ranks
 merged_data['population_rank'] = merged_data['Population'].rank(ascending=False)
 merged_data['gdp_rank'] = merged_data['GDP'].rank(ascending=False)
@@ -89,29 +91,66 @@ fig1 = px.scatter(merged_data, x='GDP', y='total_votes', size='Population', colo
                   labels={'GDP': 'GDP', 'total_votes': 'Total Votes'},
                   size_max=50)
 
-fig1.show()
+#fig1.show()
+
+data = merged_data.sort_values(by=['Year'], ascending=True)
+# Creating the animated scatter plot
+fig2 = px.scatter(data, 
+                 x='GDP', 
+                 y='total_votes', 
+                 animation_frame='Year', 
+                 size='average_quality_score', 
+                 color='gdp_rank', 
+                 hover_name='Country_Code', 
+                 log_x=True, 
+                 size_max=55, 
+                 range_x=[data['GDP'].min(), data['GDP'].max()], 
+                 range_y=[data['total_votes'].min(), data['total_votes'].max()],
+                 title='GDP vs Total Votes Over Year',
+                 labels={'Year': 'Year'})
+# Adjust the animation speed
+animation_speed = 1000  # milliseconds between frames
+fig2.update_layout(
+    updatemenus=[{
+        "buttons": [{
+            "args": [None, {"frame": {"duration": animation_speed, "redraw": True}, "fromcurrent": True}],
+            "label": "Play",
+            "method": "animate"
+        }, {
+            "args": [[None], {"frame": {"duration": 0, "redraw": True}, "mode": "immediate", "transition": {"duration": 0}}],
+            "label": "Pause",
+            "method": "animate"
+        }]
+    }]
+)
+#fig2.show()
+
+fig2.write_html('analysis/plots/flim_hegemony/gdp_vs_votes.html')
 
 # Bubble plot for GDP vs Average Quality Score
-fig2 = px.scatter(merged_data, x='GDP', y='average_quality_score', size='Population', color='gdp_rank', 
+fig3 = px.scatter(merged_data, x='GDP', y='average_quality_score', size='Population', color='gdp_rank', 
                   hover_name='Country_Code', title='GDP vs Average Quality Score',
                   labels={'GDP': 'GDP', 'average_quality_score': 'Average Quality Score'},
                   size_max=50)
 
-fig2.show()
+#fig3.show()
 
-# Heatmap for ranks
-rank_data = merged_data[['Country_Code', 'population_rank', 'gdp_rank', 'gdp_per_capita_rank', 'total_votes_rank', 'average_quality_rank']]
-fig3 = px.imshow(rank_data.set_index('Country_Code').T, title='Heatmap of Ranks')
-# fig3.show()
+fig = px.scatter_matrix(merged_data,
+                        dimensions=['population_rank', 'gdp_rank', 'gdp_per_capita_rank', 'total_votes_rank', 'average_quality_rank'],
+                        color='Country_Code',
+                        title='Scatter Plot Matrix of Ranks',
+                        size_max=50)
+#fig.show()
+
 
 # Parallel coordinates plot
 fig4 = px.parallel_coordinates(merged_data, dimensions=['population_rank', 'gdp_rank', 'gdp_per_capita_rank', 'total_votes_rank', 'average_quality_rank'],
                                color='gdp_rank', title='Parallel Coordinates Plot of Ranks')
-# fig4.show()
+#fig4.show()
 
 # Scatter plot for Weak Hegemony vs Strong Hegemony
 fig5 = px.scatter(merged_data, x='weak_hegemony', y='strong_hegemony', size='Population', color='gdp_rank', 
                   hover_name='Country_Code', title='Weak Hegemony vs Strong Hegemony',
                   labels={'weak_hegemony': 'Weak Hegemony', 'strong_hegemony': 'Strong Hegemony'},
                   size_max=45)
-fig5.show()
+#fig5.show()
